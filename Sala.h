@@ -18,8 +18,8 @@ public:
     int getLiczbaRzedow() const;
     int getMiejscaWRzedzie() const;
     bool czyWolne(int rzad, int miejsce) const;
-    bool zajmij(int rzad, int miejsce);
-    bool zwolnij(int rzad, int miejsce);
+    void zajmij(int rzad, int miejsce);
+    void zwolnij(int rzad, int miejsce);
     int liczbaWolnych() const;
     void wyswietl() const;
 };

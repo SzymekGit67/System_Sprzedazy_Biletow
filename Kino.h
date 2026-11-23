@@ -31,7 +31,7 @@ public:
     int liczbaSeansow() const;
     void wyswietlSeanse() const;
 
-    bool sprzedajBilet(int indeksSeansu, int rzad, int miejsce, bool ulgowy);
+    void sprzedajBilet(int indeksSeansu, int rzad, int miejsce, bool ulgowy);
     void wyswietlBilety() const;
     double utarg() const;
 };

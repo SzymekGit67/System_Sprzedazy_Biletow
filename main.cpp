@@ -1,5 +1,6 @@
 #include <iostream>
 #include <limits>
+#include <stdexcept>
 #include <string>
 #include "Kino.h"
 using namespace std;
@@ -35,10 +36,6 @@ string wczytajTekst(const string& komunikat) {
     return s;
 }
 
-bool poprawnyNumer(int nr, int max) {
-    return nr >= 1 && nr <= max;
-}
-
 void wyswietlMenu() {
     cout << "\n===== SYSTEM SPRZEDAZY BILETOW =====\n";
     cout << "1.  Pokaz filmy\n";
@@ -67,113 +64,94 @@ int main() {
         wyswietlMenu();
         wybor = wczytajInt("Wybor: ");
 
-        switch (wybor) {
-        case 1:
-            kino.wyswietlFilmy();
-            break;
-        case 2: {
-            string tytul = wczytajTekst("Tytul: ");
-            int czas = wczytajInt("Czas trwania (min): ");
-            string gatunek = wczytajTekst("Gatunek: ");
-            if (kino.dodajFilm(Film(tytul, czas, gatunek)))
-                cout << "Dodano film\n";
-            else
-                cout << "Taki film juz istnieje\n";
-            break;
-        }
-        case 3: {
-            string tytul = wczytajTekst("Tytul filmu do usuniecia: ");
-            if (kino.usunFilm(tytul))
-                cout << "Usunieto film i jego seanse\n";
-            else
-                cout << "Nie ma takiego filmu\n";
-            break;
-        }
-        case 4: {
-            string tytul = wczytajTekst("Szukany tytul: ");
-            int i = kino.szukajFilmu(tytul);
-            if (i == -1)
-                cout << "Nie ma takiego filmu\n";
-            else
-                kino.getFilm(i).wyswietl();
-            break;
-        }
-        case 5:
-            kino.wyswietlSeanse();
-            break;
-        case 6: {
-            if (kino.liczbaFilmow() == 0) {
-                cout << "Najpierw dodaj film\n";
+        try {
+            switch (wybor) {
+            case 1:
+                kino.wyswietlFilmy();
+                break;
+            case 2: {
+                string tytul = wczytajTekst("Tytul: ");
+                int czas = wczytajInt("Czas trwania (min): ");
+                string gatunek = wczytajTekst("Gatunek: ");
+                if (kino.dodajFilm(Film(tytul, czas, gatunek)))
+                    cout << "Dodano film\n";
+                else
+                    cout << "Taki film juz istnieje\n";
                 break;
             }
-            kino.wyswietlFilmy();
-            int nrFilmu = wczytajInt("Numer filmu: ");
-            if (!poprawnyNumer(nrFilmu, kino.liczbaFilmow())) {
-                cout << "Niepoprawny numer filmu\n";
+            case 3: {
+                string tytul = wczytajTekst("Tytul filmu do usuniecia: ");
+                if (kino.usunFilm(tytul))
+                    cout << "Usunieto film i jego seanse\n";
+                else
+                    cout << "Nie ma takiego filmu\n";
                 break;
             }
-            int numerSali = wczytajInt("Numer sali: ");
-            int rzedy = wczytajInt("Liczba rzedow: ");
-            int miejsca = wczytajInt("Miejsc w rzedzie: ");
-            if (rzedy <= 0 || miejsca <= 0) {
-                cout << "Wymiary sali musza byc dodatnie\n";
+            case 4: {
+                string tytul = wczytajTekst("Szukany tytul: ");
+                int i = kino.szukajFilmu(tytul);
+                if (i == -1)
+                    cout << "Nie ma takiego filmu\n";
+                else
+                    kino.getFilm(i).wyswietl();
                 break;
             }
-            string godzina = wczytajTekst("Godzina (np. 18:30): ");
-            double cena = wczytajDouble("Cena bazowa: ");
-            kino.dodajSeans(Seans(kino.getFilm(nrFilmu - 1), Sala(numerSali, rzedy, miejsca), godzina, cena));
-            cout << "Dodano seans\n";
-            break;
-        }
-        case 7: {
-            kino.wyswietlSeanse();
-            int nr = wczytajInt("Numer seansu: ");
-            if (!poprawnyNumer(nr, kino.liczbaSeansow())) {
-                cout << "Niepoprawny numer seansu\n";
+            case 5:
+                kino.wyswietlSeanse();
+                break;
+            case 6: {
+                kino.wyswietlFilmy();
+                int nrFilmu = wczytajInt("Numer filmu: ");
+                const Film& film = kino.getFilm(nrFilmu - 1);
+                int numerSali = wczytajInt("Numer sali: ");
+                int rzedy = wczytajInt("Liczba rzedow: ");
+                int miejsca = wczytajInt("Miejsc w rzedzie: ");
+                string godzina = wczytajTekst("Godzina (np. 18:30): ");
+                double cena = wczytajDouble("Cena bazowa: ");
+                kino.dodajSeans(Seans(film, Sala(numerSali, rzedy, miejsca), godzina, cena));
+                cout << "Dodano seans\n";
                 break;
             }
-            double cena = wczytajDouble("Nowa cena bazowa: ");
-            kino.getSeans(nr - 1).setCenaBazowa(cena);
-            cout << "Zmieniono cene\n";
-            break;
-        }
-        case 8: {
-            kino.wyswietlSeanse();
-            int nr = wczytajInt("Numer seansu: ");
-            if (!poprawnyNumer(nr, kino.liczbaSeansow())) {
-                cout << "Niepoprawny numer seansu\n";
+            case 7: {
+                kino.wyswietlSeanse();
+                int nr = wczytajInt("Numer seansu: ");
+                Seans& seans = kino.getSeans(nr - 1);
+                double cena = wczytajDouble("Nowa cena bazowa: ");
+                seans.setCenaBazowa(cena);
+                cout << "Zmieniono cene\n";
                 break;
             }
-            kino.getSeans(nr - 1).getSala().wyswietl();
-            break;
-        }
-        case 9: {
-            kino.wyswietlSeanse();
-            int nr = wczytajInt("Numer seansu: ");
-            if (!poprawnyNumer(nr, kino.liczbaSeansow())) {
-                cout << "Niepoprawny numer seansu\n";
+            case 8: {
+                kino.wyswietlSeanse();
+                int nr = wczytajInt("Numer seansu: ");
+                kino.getSeans(nr - 1).getSala().wyswietl();
                 break;
             }
-            kino.getSeans(nr - 1).getSala().wyswietl();
-            int rzad = wczytajInt("Rzad: ");
-            int miejsce = wczytajInt("Miejsce: ");
-            int typ = wczytajInt("Typ biletu (1 - normalny, 2 - ulgowy): ");
-            if (kino.sprzedajBilet(nr - 1, rzad, miejsce, typ == 2))
+            case 9: {
+                kino.wyswietlSeanse();
+                int nr = wczytajInt("Numer seansu: ");
+                kino.getSeans(nr - 1).getSala().wyswietl();
+                int rzad = wczytajInt("Rzad: ");
+                int miejsce = wczytajInt("Miejsce: ");
+                int typ = wczytajInt("Typ biletu (1 - normalny, 2 - ulgowy): ");
+                kino.sprzedajBilet(nr - 1, rzad, miejsce, typ == 2);
                 cout << "Sprzedano bilet\n";
-            else
-                cout << "Nie mozna sprzedac biletu (zle miejsce lub zajete)\n";
-            break;
-        }
-        case 10:
-            kino.wyswietlBilety();
-            break;
-        case 0:
-            cout << "Koniec programu\n";
-            break;
-        default:
-            cout << "Nie ma takiej opcji\n";
+                break;
+            }
+            case 10:
+                kino.wyswietlBilety();
+                break;
+            case 0:
+                cout << "Koniec programu\n";
+                break;
+            default:
+                cout << "Nie ma takiej opcji\n";
+            }
+        } catch (const exception& e) {
+            cout << "Blad: " << e.what() << "\n";
         }
     } while (wybor != 0);
 
+    
     return 0;
 }

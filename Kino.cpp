@@ -2,6 +2,7 @@
 #include "BiletNormalny.h"
 #include "BiletUlgowy.h"
 #include <iostream>
+#include <stdexcept>
 using namespace std;
 
 Kino::Kino(const string& nazwa) : nazwa(nazwa) {}
@@ -35,7 +36,11 @@ int Kino::szukajFilmu(const string& tytul) const {
     return -1;
 }
 
-const Film& Kino::getFilm(int indeks) const { return filmy[indeks]; }
+const Film& Kino::getFilm(int indeks) const {
+    if (indeks < 0 || indeks >= (int)filmy.size())
+        throw out_of_range("Nie ma filmu o takim numerze");
+    return filmy[indeks];
+}
 
 int Kino::liczbaFilmow() const { return filmy.size(); }
 
@@ -53,7 +58,11 @@ void Kino::wyswietlFilmy() const {
 void Kino::dodajSeans(const Seans&seans) {
     seanse.push_back(seans);
 }
-Seans& Kino::getSeans(int indeks) { return seanse[indeks]; }
+Seans& Kino::getSeans(int indeks) {
+    if (indeks < 0 || indeks >= (int)seanse.size())
+        throw out_of_range("Nie ma seansu o takim numerze");
+    return seanse[indeks];
+}
 
 int Kino::liczbaSeansow() const { return seanse.size(); }
 
@@ -68,17 +77,13 @@ void Kino::wyswietlSeanse() const {
     }
 }
 
-bool Kino::sprzedajBilet(int indeksSeansu, int rzad,int miejsce, bool ulgowy) {
-    if (indeksSeansu < 0 || indeksSeansu >= (int)seanse.size())
-        return false;
-    Seans& s = seanse[indeksSeansu];
-    if (!s.getSala().zajmij(rzad, miejsce))
-        return false;
+void Kino::sprzedajBilet(int indeksSeansu, int rzad, int miejsce, bool ulgowy) {
+    Seans& s = getSeans(indeksSeansu);
+    s.getSala().zajmij(rzad, miejsce);
     if (ulgowy)
         bilety.push_back(new BiletUlgowy(s, rzad, miejsce));
     else
         bilety.push_back(new BiletNormalny(s, rzad, miejsce));
-    return true;
 }
 
 void Kino::wyswietlBilety() const {
