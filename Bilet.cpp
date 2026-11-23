@@ -1,5 +1,4 @@
 #include "Bilet.h"
-#include <iostream>
 using namespace std;
 
 Bilet::Bilet() : tytul(""), godzina(""), numerSali(0), rzad(0), miejsce(0), cenaBazowa(0.0) {}
@@ -16,10 +15,15 @@ double Bilet::cena() const { return cenaBazowa; }
 string Bilet::typ() const { return "Bilet"; }
 
 void Bilet::wyswietl() const {
-    cout << "[" << typ() << "] " << tytul << ", " << godzina
-         << ", sala " << numerSali << ", rzad " << rzad
-         << ", miejsce " << miejsce << ", cena: " << cena() << " zl\n";
+    cout << *this << "\n";
 }
 
 int Bilet::getRzad() const { return rzad; }
 int Bilet::getMiejsce() const { return miejsce; }
+
+ostream& operator<<(ostream& os, const Bilet& b) {
+    os << "[" << b.typ() << "] " << b.tytul << ", " << b.godzina
+       << ", sala " << b.numerSali << ", rzad " << b.rzad
+       << ", miejsce " << b.miejsce << ", cena: " << b.cena() << " zl";
+    return os;
+}

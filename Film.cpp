@@ -13,3 +13,6 @@ void Film::setGatunek(const string& gatunek) {this->gatunek = gatunek;}
 void Film::wyswietl() const {
     cout << tytul << " (" << gatunek << ", " << czasTrwania << " min)"<<endl;
 }
+bool Film::operator==(const Film& inny) const {
+    return tytul == inny.tytul && czasTrwania == inny.czasTrwania && gatunek == inny.gatunek;
+}

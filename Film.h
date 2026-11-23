@@ -20,6 +20,7 @@ public:
     void setCzasTrwania(int czasTrwania);
     void setGatunek(const string& gatunek);
     void wyswietl() const;
+    bool operator==(const Film& inny) const;
 };
 
 #endif

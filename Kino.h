@@ -20,7 +20,7 @@ public:
     Kino(const Kino&) = delete;
     Kino& operator=(const Kino&) = delete;
     string getNazwa() const;
-    void dodajFilm(const Film& film);
+    bool dodajFilm(const Film& film);
     bool usunFilm(const string& tytul);
     int szukajFilmu(const string& tytul) const;
     const Film& getFilm(int indeks) const;

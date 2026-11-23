@@ -11,8 +11,12 @@ Kino::~Kino() {
         delete b;
 }
 string Kino::getNazwa() const { return nazwa; }
-void Kino::dodajFilm(const Film& film) {
+bool Kino::dodajFilm(const Film& film) {
+    for (const Film& f : filmy)
+        if (f == film)
+            return false;
     filmy.push_back(film);
+    return true;
 }
 bool Kino::usunFilm(const string& tytul) {
     int i = szukajFilmu(tytul);
@@ -84,7 +88,7 @@ void Kino::wyswietlBilety() const {
     }
     for (int i = 0; i < (int)bilety.size(); i++) {
         cout << i + 1 << ". ";
-        bilety[i]->wyswietl();
+        cout << *bilety[i] << "\n";
     }
     cout << "Utarg: " << utarg() << " zl\n";
 }

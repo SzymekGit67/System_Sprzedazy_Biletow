@@ -2,6 +2,7 @@
 #define BILET_H
 
 #include <string>
+#include <iostream>
 #include "Seans.h"
 using namespace std;
 
@@ -25,6 +26,10 @@ public:
 
     int getRzad() const;
     int getMiejsce() const;
+
+    friend ostream& operator<<(ostream& os, const Bilet& b);
 };
+
+ostream& operator<<(ostream& os, const Bilet& b);
 
 #endif

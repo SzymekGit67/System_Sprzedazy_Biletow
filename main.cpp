@@ -75,8 +75,10 @@ int main() {
             string tytul = wczytajTekst("Tytul: ");
             int czas = wczytajInt("Czas trwania (min): ");
             string gatunek = wczytajTekst("Gatunek: ");
-            kino.dodajFilm(Film(tytul, czas, gatunek));
-            cout << "Dodano film\n";
+            if (kino.dodajFilm(Film(tytul, czas, gatunek)))
+                cout << "Dodano film\n";
+            else
+                cout << "Taki film juz istnieje\n";
             break;
         }
         case 3: {
