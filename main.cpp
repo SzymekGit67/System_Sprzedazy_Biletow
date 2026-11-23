@@ -1,32 +1,24 @@
 #include <iostream>
-#include <vector>
-#include "Film.h"
-#include "Sala.h"
-#include "Seans.h"
-#include "Bilet.h"
-#include "BiletNormalny.h"
-#include "BiletUlgowy.h"
+#include "Kino.h"
 using namespace std;
 
 int main() {
-    Film f("Interstellar", 169, "sci-fi");
-    Seans s(f, Sala(1, 5, 8), "18:30", 25.0);
+    Kino kino("Kino Studyjne");
 
-    vector<Bilet*> bilety;
+    kino.dodajFilm(Film("Interstellar", 169, "sci-fi"));
+    kino.dodajFilm(Film("Incepcja", 148, "sci-fi"));
 
-    if (s.getSala().zajmij(2, 3))
-        bilety.push_back(new BiletNormalny(s, 2, 3));
-    if (s.getSala().zajmij(2, 4))
-        bilety.push_back(new BiletUlgowy(s, 2, 4));
+    kino.dodajSeans(Seans(kino.getFilm(0), Sala(1, 5, 8), "18:30", 25.0));
+    kino.dodajSeans(Seans(kino.getFilm(1), Sala(2, 4, 6), "20:00", 28.0));
 
-    s.wyswietl();
-    s.getSala().wyswietl();
+    kino.sprzedajBilet(0, 2, 3, false);
+    kino.sprzedajBilet(0, 2, 4, true);
+    if (!kino.sprzedajBilet(0, 2, 4, true))
+        cout << "Miejsce zajete\n";
 
-    for (const Bilet* b : bilety)
-        b->wyswietl();
-
-    for (Bilet* b : bilety)
-        delete b;
+    kino.wyswietlFilmy();
+    kino.wyswietlSeanse();
+    kino.wyswietlBilety();
 
     return 0;
 }
